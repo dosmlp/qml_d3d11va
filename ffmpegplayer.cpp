@@ -27,6 +27,23 @@ int FFmpegPlayer::hwDecoderInit(AVCodecContext *ctx, const enum AVHWDeviceType t
     int err = 0;
     AVDictionary* dic = nullptr;
     av_dict_set_int(&dic,"d3d11device",d3d11device,0);
+    /*hwcontext_d3d11va.c源码改动部分
+    int64_t idevice = strtoll(av_dict_get(opts, "d3d11device", NULL, 0)->value, NULL, 10);
+
+    if (idevice) {
+        device_hwctx->device = (ID3D11Device*)idevice;
+    } else {
+        hr = mD3D11CreateDevice(pAdapter, pAdapter ? D3D_DRIVER_TYPE_UNKNOWN : D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags, NULL, 0,
+                                D3D11_SDK_VERSION, &device_hwctx->device, NULL, NULL);
+        if (pAdapter)
+            IDXGIAdapter_Release(pAdapter);
+        if (FAILED(hr)) {
+            av_log(ctx, AV_LOG_ERROR, "Failed to create Direct3D device (%lx)\n", (long)hr);
+            return AVERROR_UNKNOWN;
+        }
+    }
+
+*/
     if ((err = av_hwdevice_ctx_create(&hw_device_ctx, type,
                                       NULL, dic, 0)) < 0) {
         fprintf(stderr, "Failed to create specified HW device.\n");
